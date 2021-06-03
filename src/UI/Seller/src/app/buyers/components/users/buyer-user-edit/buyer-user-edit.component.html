@@ -1,23 +1,23 @@
-<div class="container-fluid">
-  <user-group-assignments
-    *ngIf="selectedResource && !isCreatingNew"
-    [isCreatingNew]="isCreatingNew"
-    userGroupType="BuyerLocation"
-    [user]="selectedResource"
-    (assignmentsToAdd)="addUserGroupAssignments($event)"
-    (hasAssignments)="userHasAssignments($event)"
-    [userPermissionsService]="buyerUserService"
-  >
-  </user-group-assignments>
-  <form *ngIf="resourceForm" [formGroup]="resourceForm">
-    <div class="row pt-3">
-      <div class="col-md-5">
-        <h5>Account Information</h5>
-        <p class="font-italic">
-          Information about this user's Headstart account.
-        </p>
-      </div>
-      <div class="col-md-7 form-group">
+<user-group-assignments
+  *ngIf="selectedResource && !isCreatingNew"
+  [isCreatingNew]="isCreatingNew"
+  userGroupType="BuyerLocation"
+  [user]="selectedResource"
+  (assignmentsToAdd)="addUserGroupAssignments($event)"
+  (hasAssignments)="userHasAssignments($event)"
+  [userPermissionsService]="buyerUserService"
+>
+</user-group-assignments>
+<form *ngIf="resourceForm" [formGroup]="resourceForm">
+  <div class="row pt-3">
+    <div class="col-md-3">
+      <h5>Account Information</h5>
+      <p class="font-italic">
+        Information about this user's Headstart account.
+      </p>
+    </div>
+    <div class="col-md-9 form-group">
+      <div class="card bg-white shadow-sm p-4">
         <div class="form-group">
           <p class="mb-1">Active</p>
           <label class="switch mb-0" for="Active">
@@ -63,18 +63,21 @@
               (input)="updateResourceFromEvent()"
               placeholder="Enter Email"
             />
-            <span *ngIf="hasValidEmailError()"
-            class="error-message">Please enter a valid email address</span>
+            <span *ngIf="hasValidEmailError()" class="error-message"
+              >Please enter a valid email address</span
+            >
           </div>
         </div>
       </div>
     </div>
-    <div class="row pt-3">
-      <div class="col-md-5">
-        <h5>Personal Information</h5>
-        <p class="font-italic">Information about this user.</p>
-      </div>
-      <div class="col-md-7 form-group">
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-3">
+      <h5>Personal Information</h5>
+      <p class="font-italic">Information about this user.</p>
+    </div>
+    <div class="col-md-9 form-group">
+      <div class="card bg-white shadow-sm p-4">
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="FirstName">First Name</label>
@@ -149,19 +152,19 @@
         </div>
       </div>
     </div>
-  </form>
-  <user-group-assignments
-    *ngIf="
-      selectedResource &&
-      isCreatingNew &&
-      this.resourceForm.controls.Country.value
-    "
-    [isCreatingNew]="isCreatingNew"
-    userGroupType="BuyerLocation"
-    [user]="selectedResource"
-    [homeCountry]="resourceForm.controls.Country.value"
-    (assignmentsToAdd)="addUserGroupAssignments($event)"
-    [userPermissionsService]="buyerUserService"
-  >
-  </user-group-assignments>
-</div>
+  </div>
+</form>
+<user-group-assignments
+  *ngIf="
+    selectedResource &&
+    isCreatingNew &&
+    this.resourceForm.controls.Country.value
+  "
+  [isCreatingNew]="isCreatingNew"
+  userGroupType="BuyerLocation"
+  [user]="selectedResource"
+  [homeCountry]="resourceForm.controls.Country.value"
+  (assignmentsToAdd)="addUserGroupAssignments($event)"
+  [userPermissionsService]="buyerUserService"
+>
+</user-group-assignments>

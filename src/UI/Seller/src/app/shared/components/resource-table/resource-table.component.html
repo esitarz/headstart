@@ -24,15 +24,15 @@
       (!isMyResource || _currentResourceNamePlural !== 'suppliers') &&
       !excludeFromFilterBar
     "
-    class="row additional-item-edit-resource additional-item-table"
+    class="row additional-item-edit-resource additional-item-table gap-2"
   >
     <div
       *ngIf="parentResourceService && !isMyResource"
-      class="col-lg-3 col-md-4 col-sm-5 parent-resources"
+      class="col-lg-3 col-md-4 col-sm-5 d-flex align-items-center gap-2 parent-resources"
     >
       <!-- parent resource dropdown -->
       <resource-select-dropdown-component
-        class="btn-block resource-btn mr-1 mb-1"
+        class="w-100 resource-btn"
         [parentService]="parentResourceService"
         [ocService]="_ocService"
       >
@@ -42,11 +42,11 @@
       <div
         *ngIf="!excludeFromSubResourceView"
         ngbDropdown
-        class="d-inline-block parent-resource-dropdown btn-block mt-0 mb-1"
+        class="d-inline-block parent-resource-dropdown w-100"
       >
         <!-- change to currently selected option  -->
         <button
-          class="btn btn-block btn-outline-dark"
+          class="btn btn-block btn-outline-secondary"
           id="parentresourcedropdown"
           ngbDropdownToggle
         >
@@ -368,39 +368,41 @@
           >
           </resource-list-meta>
         </div>
-        <div class="col-md-9 col-sm-12 bg-light contents">
+        <div class="col-md-9 border-top contents">
           <div
+            class="row align-items-center my-3 resource-title-container additional-item-edit-resource"
             *ngIf="shouldShowTitleContainer"
-            class="py-1 d-flex flex-row justify-content-between resource-title-container additional-item-edit-resource"
           >
-            <span
-              class="d-flex flex-row justify-content-start align-items-center"
-            >
+            <div class="col-md-3">
               <div
-                class="icon-button ripple hover-btn"
-                (click)="handleSelectResource({})"
+                class="d-flex flex-row justify-content-start align-items-center"
               >
-                <div class="icon-wrapper">
-                  <fa-icon class="text-dark" [icon]="faChevronLeft"> </fa-icon>
+                <div
+                  class="icon-button ripple hover-btn"
+                  (click)="handleSelectResource({})"
+                >
+                  <div class="icon-wrapper">
+                    <fa-icon class="text-dark" [icon]="faChevronLeft">
+                    </fa-icon>
+                  </div>
                 </div>
+                <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
+                  New {{ resourceType | titlecase }}
+                  {{ labelSingular | translate }}
+                </h2>
+                <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
+                  {{ getHeaderText(_resourceInSelection) }}
+                </h2>
               </div>
-              <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
-                New {{ resourceType | titlecase }}
-                {{ labelSingular | translate }}
-              </h2>
-              <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
-                {{ getHeaderText(_resourceInSelection) }}
-              </h2>
-            </span>
-            <button
-              *ngIf="canImpersonateResource && !isCreatingNew"
-              (click)="impersonateUser()"
-              class="btn btn-primary"
-            >
-              Impersonate
-            </button>
-            <span
-              class="d-flex align-items-center"
+              <button
+                *ngIf="canImpersonateResource && !isCreatingNew"
+                (click)="impersonateUser()"
+                class="btn btn-primary"
+              >
+                Impersonate
+              </button>
+            </div>
+            <ng-container
               *ngIf="
                 !parentResourceService &&
                 _ocService.subResourceList &&
@@ -408,14 +410,18 @@
                 !isCreatingNew
               "
             >
-              <a
-                class="btn btn-outline-info ml-3"
-                *ngFor="let subResource of _ocService.subResourceList"
-                [routerLink]="[subResource.route]"
+              <div
+                class="col-md-9 d-flex align-items-center justify-content-end flex-wrap gap-2"
               >
-                {{ subResource.display | translate }}
-              </a>
-            </span>
+                <a
+                  class="btn btn-outline-info"
+                  *ngFor="let subResource of _ocService.subResourceList"
+                  [routerLink]="[subResource.route]"
+                >
+                  {{ subResource.display | translate }}
+                </a>
+              </div>
+            </ng-container>
           </div>
           <div *ngIf="!isMyResource || shouldDisplayList">
             <ng-content *ngTemplateOutlet="editUnwrapped"> </ng-content>
@@ -433,13 +439,14 @@
       </ng-container>
       <ng-template #editUnwrapped>
         <div class="bg-light">
-          <perfect-scrollbar
-            class="w-100"
+          <!-- <perfect-scrollbar
+            [suppressScrollX]="true"
+            class="w-100 overflow-x-hidden"
             id="resource-edit-scroll"
             [ngStyle]="{ 'height.px': editResourceHeight }"
-          >
-            <ng-content select=".resource-edit"> </ng-content>
-          </perfect-scrollbar>
+          > -->
+          <ng-content select=".resource-edit"> </ng-content>
+          <!-- </perfect-scrollbar> -->
           <!-- TODO: 1/2 Abstract into component to be used anywhere using inputs and outputs -->
           <div
             *ngIf="shouldShowResourceActions"
