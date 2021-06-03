@@ -112,3 +112,11 @@ How to use _shame.scss:
       opacity: 1;
     }
   }
+
+  // adding a more padding to all pilled badges.
+  // note that .badge-pill already has horizontal padding.
+  // why they chose not to add a little vertical padding it a mystery.
+  .badge-pill {
+    padding-top: .3rem;
+    padding-bottom: .3rem;
+  }

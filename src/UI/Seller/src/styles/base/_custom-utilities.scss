@@ -6,20 +6,18 @@
     }
   }
 
-//   DESIGN: I think we wanted `letter-spacing` or `font-kerning` here, but this should be it's own custom utility.
-//   .text-uppercase {
-//     kerning: 0.05rem;
-//   }
+.letter-spacing-1           { letter-spacing: .5ch;   }
+.letter-spacing-2           { letter-spacing: 1ch;    }
+.letter-spacing-3           { letter-spacing: 1.5ch;  }
 
-.letter-spacing-1 { letter-spacing: .5ch;   }
-.letter-spacing-2 { letter-spacing: 1ch;    }
-.letter-spacing-3 { letter-spacing: 1.5ch;  }
+.overflow-y-hidden          { overflow-y: hidden; }
+.overflow-x-hidden          { overflow-x: hidden; }
+.overflow-initial           { overflow: initial !important;  }
 
-  .vertical-align-middle {  vertical-align: middle !important;  }
+.vertical-align-middle      {  vertical-align: middle !important;   }
+.set-to-top                 { top: 0; }
 
-  .set-to-top { top: 0; }
-  
-  .color-beige { color: #cccccc; }
+.color-beige                { color: #cccccc; }
 
-  .font-weight-light {  font-weight:300; }
-  .font-weight-black {  font-weight:900; }
+.font-weight-light          {  font-weight:300; }
+.font-weight-black          {  font-weight:900; }
