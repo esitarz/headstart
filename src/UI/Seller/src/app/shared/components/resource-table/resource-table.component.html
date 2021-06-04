@@ -1,7 +1,7 @@
 <resource-breadcrumbs-component></resource-breadcrumbs-component>
 <div class="container-fluid">
   <!-- Page Title -->
-  <div class="row base-layout-item">
+  <div class="row base-layout-item" id="baseLayoutHeader">
     <div class="col-md-12">
       <div class="py-3">
         <h1 class="resource-name mb-0" translate>
@@ -24,7 +24,8 @@
       (!isMyResource || _currentResourceNamePlural !== 'suppliers') &&
       !excludeFromFilterBar
     "
-    class="row additional-item-edit-resource additional-item-table gap-2"
+    class="row additional-item-edit-resource additional-item-table gap-2 pb-3"
+    id="baseLayoutHeaderActions"
   >
     <div
       *ngIf="parentResourceService && !isMyResource"
@@ -155,7 +156,7 @@
                     <fa-icon [icon]="faFilter"> </fa-icon>
                     <fa-layers-counter
                       *ngIf="activeFilterCount && activeFilterCount > 0"
-                      class="badge__counter--large layers-background"
+                      class="badge__counter--large bg-medium"
                       [content]="activeFilterCount"
                     >
                     </fa-layers-counter>
@@ -255,35 +256,34 @@
     </div>
   </div>
   <!-- /Filter Bar -->
-  <div class="row mt-4">
+  <div class="row" id="scrollableContent">
     <div class="col-md-12">
       <!-- full table view -->
-      <div *ngIf="showFilterBar()">
-        <perfect-scrollbar
+      <ng-container *ngIf="showFilterBar()">
+        <!-- <perfect-scrollbar
           id="perfectScroll"
           class="scrollbar-top w-100"
           [ngStyle]="{ 'height.px': tableHeight }"
           (psYReachEnd)="handleScrollEnd()"
+        > -->
+        <full-resource-table-component
+          [resourceType]="
+            _ocService.secondaryResourceLevel || _ocService.primaryResourceLevel
+          "
+          [requestStatus]="requestStatus"
+          (resourceSelected)="handleSelectResource($event)"
+          [resourceList]="resourceList"
+          [ocService]="_ocService"
         >
-          <full-resource-table-component
-            [resourceType]="
-              _ocService.secondaryResourceLevel ||
-              _ocService.primaryResourceLevel
-            "
-            [requestStatus]="requestStatus"
-            (resourceSelected)="handleSelectResource($event)"
-            [resourceList]="resourceList"
-            [ocService]="_ocService"
-          >
-          </full-resource-table-component>
-          <request-status
-            [requestStatus]="requestStatus"
-            [subResourceName]="(labelPlural | translate) || ''"
-            [selectedParentResouceName]="selectedParentResourceName"
-          >
-          </request-status>
-        </perfect-scrollbar>
-      </div>
+        </full-resource-table-component>
+        <request-status
+          [requestStatus]="requestStatus"
+          [subResourceName]="(labelPlural | translate) || ''"
+          [selectedParentResouceName]="selectedParentResourceName"
+        >
+        </request-status>
+        <!-- </perfect-scrollbar> -->
+      </ng-container>
       <!-- editing/creating view -->
       <div
         *ngIf="
@@ -292,11 +292,11 @@
         "
         class="row resource-table-container"
       >
-        <div class="col-3 p-0 d-md-block d-none">
+        <div class="col-3 p-0 d-md-block d-none position-relative">
+          <!-- Sidebar Scroll Content -->
           <perfect-scrollbar
-            [ngStyle]="{ 'height.px': tableHeight }"
             (psYReachEnd)="handleScrollEnd()"
-            class="resource-table-side w-100"
+            class="resource-table-side h-scrollable-content w-100"
           >
             <table
               *ngIf="
@@ -360,32 +360,47 @@
               [selectedParentResouceName]="selectedParentResourceName"
             >
             </request-status>
+            <div class="bg-warning" style="height: 900px">hello?</div>
+            <div class="status-bar--side">
+              <resource-list-meta
+                *ngIf="selectedResourceID || isCreatingNew"
+                [selectedResourceID]="selectedResourceID || isCreatingNew"
+                [listPage]="_ocService?.resourceSubject?.value"
+              >
+              </resource-list-meta>
+            </div>
           </perfect-scrollbar>
-          <resource-list-meta
-            *ngIf="selectedResourceID || isCreatingNew"
-            [selectedResourceID]="selectedResourceID || isCreatingNew"
-            [listPage]="_ocService?.resourceSubject?.value"
-          >
-          </resource-list-meta>
         </div>
         <div class="col-md-9 border-top contents">
           <div
-            class="row align-items-center my-3 resource-title-container additional-item-edit-resource"
+            class="row no-gutters align-items-center my-3 resource-title-container additional-item-edit-resource"
             *ngIf="shouldShowTitleContainer"
           >
             <div class="col-md-3">
               <div
-                class="d-flex flex-row justify-content-start align-items-center"
+                class="d-flex flex-row justify-content-start align-items-center gap-2"
               >
-                <div
-                  class="icon-button ripple hover-btn"
+                <button
+                  type="button"
+                  class="btn btn-xs btn-primary-light"
                   (click)="handleSelectResource({})"
+                >
+                  <fa-icon
+                    class="mr-1"
+                    [icon]="faChevronLeft"
+                    aria-hidden="true"
+                  ></fa-icon>
+                  Go Back
+                </button>
+                <!-- <div
+                  class="icon-button ripple hover-btn"
+                  
                 >
                   <div class="icon-wrapper">
                     <fa-icon class="text-dark" [icon]="faChevronLeft">
                     </fa-icon>
                   </div>
-                </div>
+                </div> -->
                 <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
                   New {{ resourceType | titlecase }}
                   {{ labelSingular | translate }}
@@ -394,24 +409,26 @@
                   {{ getHeaderText(_resourceInSelection) }}
                 </h2>
               </div>
+            </div>
+
+            <div
+              class="col-md-9 d-flex align-items-center justify-content-end flex-wrap gap-2"
+            >
               <button
                 *ngIf="canImpersonateResource && !isCreatingNew"
                 (click)="impersonateUser()"
                 class="btn btn-primary"
+                type="button"
               >
                 Impersonate
               </button>
-            </div>
-            <ng-container
-              *ngIf="
-                !parentResourceService &&
-                _ocService.subResourceList &&
-                _ocService.subResourceList.length &&
-                !isCreatingNew
-              "
-            >
-              <div
-                class="col-md-9 d-flex align-items-center justify-content-end flex-wrap gap-2"
+              <ng-container
+                *ngIf="
+                  !parentResourceService &&
+                  _ocService.subResourceList &&
+                  _ocService.subResourceList.length &&
+                  !isCreatingNew
+                "
               >
                 <a
                   class="btn btn-outline-info"
@@ -420,91 +437,96 @@
                 >
                   {{ subResource.display | translate }}
                 </a>
-              </div>
-            </ng-container>
+              </ng-container>
+            </div>
           </div>
           <div *ngIf="!isMyResource || shouldDisplayList">
             <ng-content *ngTemplateOutlet="editUnwrapped"> </ng-content>
           </div>
         </div>
       </div>
-
       <!-- ng content can only be used once for transclusion, ngTemplatOutlets are required so that 
       we are only using the component once in the resource table -->
-
+      <!-- <perfect-scrollbar
+      wtfm8
+      [config]="{ suppressScrollX: true }"
+      id="resource-edit-scroll"
+      [ngStyle]="{ 'height.px': editResourceHeight }"
+    > -->
       <ng-container
         *ngIf="(isMyResource && !shouldDisplayList) || excludeFromFullTableView"
       >
         <div *ngTemplateOutlet="editUnwrapped"></div>
       </ng-container>
       <ng-template #editUnwrapped>
-        <div class="bg-light">
-          <!-- <perfect-scrollbar
-            [suppressScrollX]="true"
-            class="w-100 overflow-x-hidden"
-            id="resource-edit-scroll"
-            [ngStyle]="{ 'height.px': editResourceHeight }"
-          > -->
-          <ng-content select=".resource-edit"> </ng-content>
-          <!-- </perfect-scrollbar> -->
-          <!-- TODO: 1/2 Abstract into component to be used anywhere using inputs and outputs -->
-          <div
-            *ngIf="shouldShowResourceActions"
-            class="d-flex justify-content-between align-items-center py-2 additional-item-edit-resource"
+        <div class="position-relative pt-4 border-top">
+          <perfect-scrollbar
+            [config]="{ suppressScrollX: true }"
+            (psYReachEnd)="handleScrollEnd()"
+            class="resource-table-main"
           >
-            <delete-confirm-modal-component
-              *ngIf="!isCreatingNew && !isMyResource && canBeDeleted"
-              buttonText="{{ labelSingular }}"
-              (deleteConfirmed)="handleDelete($event)"
-            >
-            </delete-confirm-modal-component>
-            <div *ngIf="!canBeDeleted">
-              <button
-                class="btn btn-link text-muted"
-                ngbTooltip="This {{
-                  labelSingular | translate
-                }} is in use and cannot be deleted."
-                placement="top"
-              >
-                Delete {{ labelSingular | translate | titlecase }}
-              </button>
-            </div>
-            <div>
-              <button
-                class="btn btn-primary"
-                type="submit"
-                [disabled]="
-                  !areChanges ||
-                  resourceForm?.status === 'INVALID' ||
-                  dataIsSaving
-                "
-                (click)="handleSave()"
-              >
-                {{ getSaveBtnText() }}
-              </button>
-              <button
-                class="btn btn-primary ml-3"
-                (click)="handleDiscardChanges()"
-                *ngIf="areChanges && !isCreatingNew"
-              >
-                Discard Changes
-              </button>
-            </div>
+            <ng-content select=".resource-edit"> </ng-content>
+          </perfect-scrollbar>
+          <div class="status-bar--main">
             <div
-              *ngIf="_errorMessage && _errorMessage.length > 0"
-              class="text-danger"
+              *ngIf="shouldShowResourceActions"
+              class="d-flex justify-content-between align-items-center py-2 additional-item-edit-resource"
             >
-              {{ _errorMessage }}
+              <delete-confirm-modal-component
+                *ngIf="!isCreatingNew && !isMyResource && canBeDeleted"
+                buttonText="{{ labelSingular }}"
+                (deleteConfirmed)="handleDelete($event)"
+              >
+              </delete-confirm-modal-component>
+              <div *ngIf="!canBeDeleted">
+                <button
+                  class="btn btn-link text-muted"
+                  ngbTooltip="This {{
+                    labelSingular | translate
+                  }} is in use and cannot be deleted."
+                  placement="top"
+                >
+                  Delete {{ labelSingular | translate | titlecase }}
+                </button>
+              </div>
+              <div>
+                <button
+                  class="btn btn-primary"
+                  type="submit"
+                  [disabled]="
+                    !areChanges ||
+                    resourceForm?.status === 'INVALID' ||
+                    dataIsSaving
+                  "
+                  (click)="handleSave()"
+                >
+                  {{ getSaveBtnText() }}
+                </button>
+                <button
+                  class="btn btn-primary ml-3"
+                  (click)="handleDiscardChanges()"
+                  *ngIf="areChanges && !isCreatingNew"
+                >
+                  Discard Changes
+                </button>
+              </div>
+              <div
+                *ngIf="_errorMessage && _errorMessage.length > 0"
+                class="text-danger"
+              >
+                {{ _errorMessage }}
+              </div>
             </div>
+            <resource-list-meta
+              *ngIf="!selectedResourceID && !isCreatingNew"
+              [selectedResourceID]="selectedResourceID"
+              [listPage]="_ocService?.resourceSubject?.value"
+            >
+            </resource-list-meta>
           </div>
         </div>
+        <!-- TODO: 1/2 Abstract into component to be used anywhere using inputs and outputs -->
       </ng-template>
     </div>
   </div>
-  <resource-list-meta
-    *ngIf="!selectedResourceID && !isCreatingNew"
-    [selectedResourceID]="selectedResourceID"
-    [listPage]="_ocService?.resourceSubject?.value"
-  >
-  </resource-list-meta>
 </div>

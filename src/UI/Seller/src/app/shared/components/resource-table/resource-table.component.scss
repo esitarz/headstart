@@ -1,21 +1,56 @@
 @import "../../../../styles/main.scss";
 
+.resource-table-container {
+  max-height: calc(100vh - var(--allHeaderHeight));
+  overflow: hidden !important;
+}
+
+.h-scrollable-content {
+  height: calc(100vh - var(--allHeaderHeight));
+}
+
+.status-bar--side {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  bottom: 0;
+  border-right: 0;
+  height: 32px;
+}
+
+.status-bar--main {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  bottom: 0;
+  border-top: 1px solid $gray-300;
+  background-color: $light;
+}
+
 .resource-table tbody .selectable-row {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .resource-table-side {
-    border-right: 1px solid $gray-300;
+  border-right: 1px solid $gray-300;
+  padding-bottom: 32px;
 }
 
-.resource-search {
-    width: 200px;
+.resource-table-main {
+  height: calc(100vh - var(--allHeaderHeight) - var(--statusBarMainHeight) - 40px); // INFO: i'm still unclear where this 40px is coming from here...but we need to cheat the buttons + status bar up by ~40px.
+  width: 100%;
+  padding-bottom: var(--statusBarMainHeight); // INFO: This stops the perfect-scrollbar from scrolling under the status bar
+  .ps-content {
+    padding-bottom: .25rem;
+  }
 }
 
+// DESIGN: Refactor Candidate, use default Bootstrap
 .selected-resource {
-    background-color: lightgrey;
+  background-color: lightgrey;
 }
 
+// DESIGN: Refactor Candidate, ::ng-deep is deprecated
 .badge__counter--large {
   ::ng-deep {
     .fa-layers-counter {
@@ -34,10 +69,10 @@
 
 .resource-name {
   font-size: 22px;
+
   @include media-breakpoint-up(sm) {
     font-size: 28px;
   }
-  // margin-top: -24px;
 }
 
 .breadcrumb {
@@ -45,14 +80,17 @@
   margin-bottom: 0;
   font-weight: 500;
   font-size: 0.9rem;
+
   .breadcrumb-item {
     display: flex;
     align-items: center;
+
     &:first-child {
       &::before {
         display: none;
       }
     }
+
     &::before {
       content: "\f054";
       font-weight: 300;
@@ -61,9 +99,11 @@
       font-family: FontAwesome;
       color: $primary-light;
     }
+
     .breadcrumb-link {
       color: $primary-light;
     }
+
     &:last-child {
       .breadcrumb-link {
         color: $light;
@@ -74,17 +114,19 @@
 
 .parent-resources {
   @include media-breakpoint-up(sm) {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
+
 .form-group.hidden {
   width: 0;
   margin: 0;
   border: none;
   padding: 0;
 }
+
 .custom-day {
   text-align: center;
   padding: 0.185rem 0.25rem;
@@ -92,13 +134,17 @@
   height: 2rem;
   width: 2rem;
 }
+
 .custom-day.focused {
   background-color: rgba($gray-900, 0.1);
 }
-.custom-day.range, .custom-day:hover {
+
+.custom-day.range,
+.custom-day:hover {
   background-color: $primary-light;
   color: white;
 }
+
 .custom-day.faded {
   background-color: $primary-light;
 }
@@ -109,8 +155,4 @@
     padding-left: 30px;
     padding-right: 30px;
   }
-}
-
-.layers-background {
-  background: gray
 }

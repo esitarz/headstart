@@ -1,14 +1,24 @@
-// DESIGN: Refactor Candidate: Use default Bootstrap ($font-size-base)
-html {
-    font-size: 0.9rem;
-  }
-  
-  body > [uib-modal-window]:not([modal-render]) {
-    display: none;
-  }
+:root{
+  --allHeaderHeight: 100%;
+  --statusBarMainHeight: unset;
+}
 
-  .cursor-pointer,
+body {
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+
+body>[uib-modal-window]:not([modal-render]) {
+  display: none;
+}
+
+.cursor-pointer,
 .link,
 .btn {
   cursor: $custom-range-track-cursor;
 }
+
+// * {
+//   border: .5px dashed rgba(deeppink,.5);
+// }

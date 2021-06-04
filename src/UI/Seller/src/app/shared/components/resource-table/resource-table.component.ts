@@ -34,6 +34,7 @@ import { transformDateMMDDYYYY } from '@app-seller/shared/services/date.helper'
 import { TranslateService } from '@ngx-translate/core'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
+import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar'
 
 @Component({
   selector: 'resource-table-component',
@@ -182,6 +183,9 @@ export class ResourceTableComponent
     this.initializeSubscriptions()
     this.subscribeToOptions()
     this.screenSize = getScreenSizeBreakPoint()
+    const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+      suppressScrollX: true,
+    }
   }
 
   mapProductTypes(types: string[]): Params[] {
@@ -232,6 +236,13 @@ export class ResourceTableComponent
         return translatedResourceName
       }
     }
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.setMainHeight()
+      this.setStatusBarMainHeight()
+    }, 500)
   }
 
   ngAfterViewChecked() {
@@ -299,6 +310,41 @@ export class ResourceTableComponent
     this.myResourceHeight = getPsHeight('')
     this.tableHeight = getPsHeight('additional-item-table')
     this.editResourceHeight = getPsHeight('additional-item-edit-resource')
+  }
+
+  // life will be easier if we can calculate the header height, then subtract that from 100vh
+  setMainHeight() {
+    const getBaseLayoutHeaderHeight = document.querySelector(
+      '#baseLayoutHeader'
+    ).clientHeight
+    const getBaseLayoutHeaderActionsHeight = document.querySelector(
+      '#baseLayoutHeaderActions'
+    ).clientHeight
+    const getBreadcrumbsHeight = document.querySelector('#resourceBreadcrumb')
+      .clientHeight
+    const getMainHeaderHeight = document.querySelector('#mainHeader')
+      .clientHeight
+    const allHeaderHeight =
+      getBaseLayoutHeaderHeight +
+      getBaseLayoutHeaderActionsHeight +
+      getBreadcrumbsHeight +
+      getMainHeaderHeight
+    document.documentElement.style.getPropertyValue('--allHeaderHeight')
+    document.documentElement.style.setProperty(
+      '--allHeaderHeight',
+      `${allHeaderHeight}px`
+    )
+  }
+
+  setStatusBarMainHeight() {
+    const statusBarMainHeight = document.querySelector('.status-bar--main')
+      .clientHeight
+    document.documentElement.style.getPropertyValue('--statusBarMainHeight')
+    document.documentElement.style.setProperty(
+      '--statusBarMainHeight',
+      `${statusBarMainHeight}px`
+    )
+    console.log(statusBarMainHeight)
   }
 
   async determineViewingContext() {
